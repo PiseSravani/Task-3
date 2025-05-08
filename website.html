@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interactive Gallery</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      overflow-x: hidden;
+    }
+    .auth-buttons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1000;
+    }
+    .auth-buttons a {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+    .login-btn {
+      background-color: black;
+      color: white;
+    }
+    .signup-btn-alt {
+      border: 2px solid black;
+      color: black;
+      background-color: transparent;
+    }
+    .login-btn:hover {
+      background-color: #222;
+    }
+    .signup-btn-alt:hover {
+      background-color: black;
+      color: white;
+    }
+    h1, .subtext {
+      text-align: center;
+      padding: 10px 20px;
+      color: #333;
+    }
+    .subtext {
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto 20px;
+    }
+    .carousel-container {
+      max-width: 600px;
+      margin: 40px auto;
+      text-align: center;
+    }
+    .carousel-image {
+      width: 40%;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .carousel-buttons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .carousel-buttons button {
+      padding: 8px 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #333;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    .carousel-buttons button:hover {
+      background-color: #555;
+    }
+    .gallery {
+      column-count: 4;
+      column-gap: 16px;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .gallery-item {
+      position: relative;
+      margin-bottom: 16px;
+      border-radius: 10px;
+      overflow: hidden;
+      break-inside: avoid;
+    }
+    .gallery-item img {
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .gallery-item:hover img {
+      transform: scale(1.02);
+    }
+    .gallery-actions {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      display: flex;
+      gap: 8px;
+    }
+    .gallery-actions button {
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: white;
+      padding: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .signup-btn {
+      display: block;
+      width: 260px;
+      height: 50px;
+      margin: 50px auto 20px;
+      background-color: #333;
+      color: white;
+      text-align: center;
+      line-height: 50px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .signup-btn:hover {
+      background-color: #555;
+    }
+    .train-track {
+      overflow: hidden;
+      background-color: #fff;
+      border-top: 2px solid #ccc;
+      padding: 20px 0;
+    }
+    .train {
+      display: flex;
+      animation: moveTrain 25s linear infinite;
+      width: max-content;
+      gap: 40px;
+    }
+    .compartment {
+      flex: 0 0 auto;
+      width: 160px;
+      text-align: center;
+    }
+    .compartment img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .compartment p {
+      margin-top: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+    }
+    @keyframes moveTrain {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+    @media (max-width: 1024px) {
+      .gallery {
+        column-count: 3;
+      }
+    }
+    @media (max-width: 768px) {
+      .gallery {
+        column-count: 2;
+      }
+      .compartment {
+        width: 120px;
+      }
+    }
+    @media (max-width: 480px) {
+      .gallery {
+        column-count: 1;
+      }
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+    }
+    .modal:target {
+      display: flex;
+    }
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 30px;
+      color: white;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="auth-buttons">
+  <a href="#" class="login-btn">Login</a>
+  <a href="#" class="signup-btn-alt">Signup</a>
+</div>
+<h1>Interactive Gallery</h1>
+<p class="subtext">
+  Inspirational designs, illustrations, and graphic elements from the world’s best designers.<br/>
+     Fuel your imagination with every scroll
+</p>
+<div class="carousel-container">
+  <img id="carouselImage" class="carousel-image" src="" alt="Carousel Image"/>
+  <div class="carousel-buttons">
+    <button onclick="prevImage()">Previous</button>
+    <button onclick="nextImage()">Next</button>
+  </div>
+</div>
+<div class="gallery" id="gallery"></div>
+<a href="#" class="signup-btn">Sign Up to Continue</a>
+<div class="train-track">
+  <div class="train" id="trainGallery"></div>
+</div>
+<div id="imageModal" class="modal">
+  <a href="#" class="close-btn">&times;</a>
+  <img id="modalImg" src="" alt="Fullscreen View"/>
+</div>
+<script>
+  const UNSPLASH_API_KEY = "stnI7FF4tBBSR-Pt6E0Yfm4_3JoFLcz5BwvZ2Fiv20A";
+  const gallery = document.getElementById("gallery");
+  const trainGallery = document.getElementById("trainGallery");
+  const carouselImage = document.getElementById("carouselImage");
+  const modalImg = document.getElementById("modalImg");
+  const imageModal = document.getElementById("imageModal");
+  const categories = ["animation", "print", "typography", "product-design", "branding", "mobile", "illustration"];
+  let carouselImages = [];
+  let currentIndex = 0;
+  async function fetchCarouselImages() {
+    const res = await fetch(`https://api.unsplash.com/photos/random?count=6&client_id=${UNSPLASH_API_KEY}`);
+    const data = await res.json();
+    carouselImages = data.map(img => img.urls.small);
+    showCarouselImage();
+  }
+  function showCarouselImage() {
+    if (carouselImages.length > 0) {
+      carouselImage.src = carouselImages[currentIndex];
+    }
+  }
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % carouselImages.length;
+    showCarouselImage();
+  }
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + carouselImages.length) % carouselImages.length;
+    showCarouselImage();
+  }
+  async function fetchMainGallery() {
+    const res = await fetch(`https://api.unsplash.com/photos/random?count=12&client_id=${UNSPLASH_API_KEY}`);
+    const data = await res.json();
+    data.forEach(photo => {
+      const item = document.createElement("div");
+      item.className = "gallery-item";
+      item.innerHTML = `
+        <img src="${photo.urls.small}" alt="${photo.alt_description || ''}" onclick="openModal('${photo.urls.regular}')">
+        <div class="gallery-actions">
+          <button onclick="event.stopPropagation(); this.classList.toggle('liked'); this.innerText = this.classList.contains('liked') ? '♥' : '♡';">♡</button>
+          <button onclick="event.stopPropagation(); downloadImage('${photo.links.download}')">↓</button>
+        </div>
+      `;
+      gallery.appendChild(item);
+    });
+  }
+  async function buildTrain() {
+    for (let i = 0; i < 2; i++) {
+      for (const category of categories) {
+        const res = await fetch(`https://api.unsplash.com/search/photos?query=${category}&per_page=1&client_id=${UNSPLASH_API_KEY}`);
+        const data = await res.json();
+        const imgURL = data.results[0]?.urls.small;
+        const alt = data.results[0]?.alt_description || category;
+        if (imgURL) {
+          const comp = document.createElement("div");
+          comp.className = "compartment";
+          comp.innerHTML = `<img src="${imgURL}" alt="${alt}"><p>${category}</p>`;
+          trainGallery.appendChild(comp);
+        }
+      }
+    }
+  }
+  function openModal(src) {
+    modalImg.src = src;
+    imageModal.style.display = "flex";
+  }
+  imageModal.addEventListener("click", e => {
+    if (e.target === imageModal || e.target.classList.contains("close-btn")) {
+      imageModal.style.display = "none";
+    }
+  });
+  function downloadImage(url) {
+    const a = document.createElement("a");
+    a.href = url + "?force=true";
+    a.download = "unsplash-image";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  fetchCarouselImages();
+  fetchMainGallery();
+  buildTrain();
+</script>
+</body>
+</html>
